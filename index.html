@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نِبراس | تعلّم بذكاء، تقدّم بثقة.</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#f5f7fb;color:#172033}
+    button{font-family:inherit;cursor:pointer}
+    .app{min-height:100vh}
+    .screen{display:none;min-height:100vh}
+    .screen.active{display:block}
+    .welcome{display:flex;align-items:center;justify-content:center;padding:30px;background:linear-gradient(135deg,#eef5ff,#f8fbff)}
+    .welcome-card{width:min(900px,100%);background:white;border-radius:28px;padding:42px;box-shadow:0 15px 50px #20304b18;text-align:center}
+    .logo{font-size:44px;font-weight:800;color:#3157d5;margin-bottom:8px}
+    .tagline{font-size:18px;color:#64748b;margin-bottom:34px}
+    .progress{height:7px;background:#e9edf5;border-radius:20px;overflow:hidden;margin:0 auto 28px;max-width:500px}
+    .progress span{display:block;height:100%;width:25%;background:#3157d5;border-radius:20px;transition:.3s}
+    h1{font-size:30px;margin:10px 0 12px}
+    .sub{color:#64748b;margin-bottom:28px}
+    .options{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+    .option{background:#fff;border:2px solid #e4e9f2;border-radius:16px;padding:18px;font-size:16px;transition:.2s}
+    .option:hover,.option.selected{border-color:#3157d5;background:#f1f5ff}
+    .primary{border:0;background:#3157d5;color:white;border-radius:14px;padding:14px 26px;font-size:16px;margin-top:28px}
+    .primary:disabled{opacity:.45;cursor:not-allowed}
+    .layout{display:flex;min-height:100vh}
+    aside{width:245px;background:#fff;border-left:1px solid #e8ecf3;padding:25px 15px;position:sticky;top:0;height:100vh}
+    .brand{font-size:28px;font-weight:800;color:#3157d5;padding:8px 14px 25px}
+    .nav button{display:block;width:100%;border:0;background:transparent;text-align:right;padding:14px;border-radius:12px;margin:5px 0;color:#5b667a;font-size:15px}
+    .nav button.active,.nav button:hover{background:#eef3ff;color:#3157d5}
+    main{flex:1;padding:30px;max-width:1250px}
+    .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+    .welcome-name{font-size:26px;font-weight:800}
+    .small{color:#748094;font-size:14px}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:22px}
+    .card{background:#fff;border:1px solid #e9edf3;border-radius:18px;padding:22px;box-shadow:0 6px 20px #20304b08}
+    .card h3{margin:0 0 10px}
+    .stat{font-size:30px;font-weight:800;color:#3157d5}
+    .section{display:none}
+    .section.active{display:block}
+    .lesson-map{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+    .node{padding:14px 18px;border-radius:14px;background:#f3f5f9;border:1px solid #e2e7ef}
+    .node.done{background:#ecfdf3;border-color:#b8ebcb}
+    .node.learning{background:#fff9e8;border-color:#f1db8a}
+    .arrow{color:#a1aabb}
+    .task{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid #edf0f5}
+    .badge{padding:6px 10px;border-radius:10px;font-size:12px;background:#eef3ff;color:#3157d5}
+    .quiz-question{font-size:20px;font-weight:700;margin:20px 0}
+    .quiz-option{display:block;width:100%;text-align:right;padding:14px;margin:9px 0;border:1px solid #e1e6ee;background:#fff;border-radius:12px}
+    .quiz-option:hover{border-color:#3157d5}
+    .bar{height:12px;background:#edf0f5;border-radius:20px;overflow:hidden;margin-top:8px}
+    .bar span{display:block;height:100%;background:#3157d5}
+    @media(max-width:800px){aside{width:75px}.brand{font-size:0}.brand:after{content:"ن";font-size:28px}.nav button{font-size:0;text-align:center}.nav button:first-letter{font-size:20px}.cards{grid-template-columns:1fr}.layout main{padding:18px}}
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <section id="setup" class="screen active welcome">
+    <div class="welcome-card">
+      <div class="logo">نِبراس</div>
+      <div class="tagline">تعلّم بذكاء، تقدّم بثقة.</div>
+      <div class="progress"><span id="setupProgress"></span></div>
+
+      <div id="step1">
+        <h1>لنبدأ رحلتك التعليمية</h1>
+        <p class="sub">اختر الفئة العمرية المناسبة لك.</p>
+        <div class="options" id="ageOptions">
+          <button class="option" data-value="6–9">6–9 سنوات</button>
+          <button class="option" data-value="10–12">10–12 سنة</button>
+          <button class="option" data-value="13–15">13–15 سنة</button>
+          <button class="option" data-value="16–18">16–18 سنة</button>
+          <button class="option" data-value="18+">18 سنة فأكثر</button>
+        </div>
+        <button class="primary" id="next1" disabled>التالي</button>
+      </div>
+
+      <div id="step2" style="display:none">
+        <h1>ما المرحلة الدراسية؟</h1>
+        <p class="sub">اختر الأقرب إليك.</p>
+        <div class="options" id="stageOptions">
+          <button class="option" data-value="ابتدائي">ابتدائي</button>
+          <button class="option" data-value="إعدادي">إعدادي</button>
+          <button class="option" data-value="ثانوي">ثانوي</button>
+          <button class="option" data-value="جامعي">جامعي</button>
+          <button class="option" data-value="تعلم ذاتي">تعلم ذاتي</button>
+        </div>
+        <button class="primary" id="next2" disabled>التالي</button>
+      </div>
+
+      <div id="step3" style="display:none">
+        <h1>ما المواد التي تريد تعلمها؟</h1>
+        <p class="sub">يمكنك اختيار أكثر من مادة.</p>
+        <div class="options" id="subjectOptions">
+          <button class="option" data-value="الرياضيات">📐 الرياضيات</button>
+          <button class="option" data-value="العلوم">🔬 العلوم</button>
+          <button class="option" data-value="اللغة العربية">📖 اللغة العربية</button>
+          <button class="option" data-value="اللغة الفرنسية">🇫🇷 اللغة الفرنسية</button>
+          <button class="option" data-value="اللغة الإنجليزية">🇬🇧 اللغة الإنجليزية</button>
+          <button class="option" data-value="التاريخ والجغرافيا">🌍 التاريخ والجغرافيا</button>
+        </div>
+        <button class="primary" id="finish" disabled>ابدأ نِبراس</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="dashboard" class="screen">
+    <div class="layout">
+      <aside>
+        <div class="brand">نِبراس</div>
+        <nav class="nav">
+          <button class="active" data-section="home">🏠 الرئيسية</button>
+          <button data-section="learn">📚 تعلّم</button>
+          <button data-section="lessons">📂 دروسي</button>
+          <button data-section="plan">📅 خطتي</button>
+          <button data-section="progress">📊 تقدمي</button>
+          <button data-section="assistant">🤖 مساعد نِبراس</button>
+        </nav>
+      </aside>
+
+      <main>
+        <div class="top">
+          <div>
+            <div class="welcome-name">مرحبًا بك في نِبراس 👋</div>
+            <div class="small" id="profileLine"></div>
+          </div>
+          <button class="option" id="reset" style="padding:10px 14px">إعادة الإعداد</button>
+        </div>
+
+        <div id="home" class="section active">
+          <div class="cards">
+            <div class="card"><h3>تقدّمك</h3><div class="stat" id="homeProgress">0%</div><div class="small">مؤشر أولي للتعلم</div></div>
+            <div class="card"><h3>مراجعة اليوم</h3><div class="stat">2</div><div class="small">مفاهيم تحتاج تدريبًا</div></div>
+            <div class="card"><h3>اختبار سريع</h3><div class="stat">5</div><div class="small">أسئلة جاهزة الآن</div></div>
+          </div>
+          <div class="card">
+            <h3>مسارك اليوم</h3>
+            <p class="small">ابدأ من آخر نقطة وصلت إليها، ثم جرّب اختبارًا قصيرًا.</p>
+            <button class="primary" onclick="showSection('learn')">متابعة التعلم</button>
+          </div>
+        </div>
+
+        <div id="learn" class="section">
+          <div class="card">
+            <h2>📚 مسارات التعلم</h2>
+            <p class="small">المفاهيم مترابطة حتى تفهم الصورة كاملة، وليس مجرد حفظ الإجابات.</p>
+            <h3>مثال: الرياضيات</h3>
+            <div class="lesson-map">
+              <div class="node done">🟢 الأعداد</div><div class="arrow">←</div>
+              <div class="node done">🟢 العمليات</div><div class="arrow">←</div>
+              <div class="node learning">🟡 الكسور</div><div class="arrow">←</div>
+              <div class="node">⚪ النسب والتناسب</div><div class="arrow">←</div>
+              <div class="node">⚪ المعادلات</div>
+            </div>
+            <button class="primary" onclick="startQuiz()">اختبار قصير</button>
+            <div id="quiz" style="display:none;margin-top:25px"></div>
+          </div>
+        </div>
+
+        <div id="lessons" class="section">
+          <div class="card">
+            <h2>📂 دروسي</h2>
+            <p>هنا ستتمكن لاحقًا من إضافة ملفاتك وملاحظاتك وتحويلها إلى مسار تعلم.</p>
+            <div class="task"><span>📄 ملف الدرس</span><span class="badge">قريبًا</span></div>
+            <div class="task"><span>🧠 ملخص ذكي</span><span class="badge">قريبًا</span></div>
+            <div class="task"><span>📝 أسئلة واختبارات</span><span class="badge">قريبًا</span></div>
+          </div>
+        </div>
+
+        <div id="plan" class="section">
+          <div class="card">
+            <h2>📅 خطتي</h2>
+            <div class="task"><span>📐 مراجعة الكسور</span><span class="badge">اليوم</span></div>
+            <div class="task"><span>🔬 مراجعة العلوم</span><span class="badge">غدًا</span></div>
+            <div class="task"><span>📝 اختبار الرياضيات</span><span class="badge">هذا الأسبوع</span></div>
+          </div>
+        </div>
+
+        <div id="progress" class="section">
+          <div class="card">
+            <h2>📊 تقدمي</h2>
+            <p class="small">نِبراس لا يعتمد على العلامة وحدها؛ هذه النسخة تعرض مؤشرًا تجريبيًا.</p>
+            <h3>الرياضيات</h3><div class="bar"><span style="width:65%"></span></div>
+            <p class="small">65% — 🟡 في طور التعلم</p>
+            <h3>العلوم</h3><div class="bar"><span style="width:40%"></span></div>
+            <p class="small">40% — 🔴 يحتاج مراجعة</p>
+          </div>
+        </div>
+
+        <div id="assistant" class="section">
+          <div class="card">
+            <h2>🤖 مساعد نِبراس</h2>
+            <p>أنا هنا لأشرح لك الفكرة خطوة بخطوة، لا لأعطيك الإجابة فقط.</p>
+            <div class="task"><span>💡 مثال: "لا أفهم الكسور"</span><span class="badge">مساعد تعليمي</span></div>
+            <p class="small" style="margin-top:18px">نسخة المساعد الذكي المتصلة بالذكاء الاصطناعي سنضيفها في مرحلة لاحقة، حتى نحافظ على النسخة الأولى مجانية.</p>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </section>
+</div>
+
+<script>
+  const state = {age:null, stage:null, subjects:[]};
+
+  function choose(containerId, callback){
+    document.querySelectorAll('#'+containerId+' .option').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        if(containerId==='subjectOptions'){
+          btn.classList.toggle('selected');
+          state.subjects=[...document.querySelectorAll('#subjectOptions .selected')].map(x=>x.dataset.value);
+          document.getElementById('finish').disabled=state.subjects.length===0;
+        }else{
+          document.querySelectorAll('#'+containerId+' .option').forEach(x=>x.classList.remove('selected'));
+          btn.classList.add('selected');
+          callback(btn.dataset.value);
+        }
+      });
+    });
+  }
+
+  choose('ageOptions',v=>{state.age=v;document.getElementById('next1').disabled=false});
+  choose('stageOptions',v=>{state.stage=v;document.getElementById('next2').disabled=false});
+  choose('subjectOptions',()=>{});
+
+  function step(n){
+    ['step1','step2','step3'].forEach(x=>document.getElementById(x).style.display='none');
+    document.getElementById('step'+n).style.display='block';
+    document.getElementById('setupProgress').style.width=(n*33.33)+'%';
+  }
+  document.getElementById('next1').onclick=()=>step(2);
+  document.getElementById('next2').onclick=()=>step(3);
+  document.getElementById('finish').onclick=()=>{
+    localStorage.setItem('nibrasProfile',JSON.stringify(state));
+    document.getElementById('setup').classList.remove('active');
+    document.getElementById('dashboard').classList.add('active');
+    document.getElementById('profileLine').textContent=state.stage+' • '+state.subjects.join('، ');
+  };
+
+  function showSection(id){
+    document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.section===id));
+  }
+  document.querySelectorAll('.nav button').forEach(btn=>btn.onclick=()=>showSection(btn.dataset.section));
+
+  const quizQuestions=[
+    {q:'إذا كان لديك 1/2 من شيء، فما الكسر الذي يمثل الشيء كاملًا؟',a:['1/2','2/2','1/4'],c:1},
+    {q:'أي عدد أكبر؟',a:['3/4','1/4','2/4'],c:0}
+  ];
+  function startQuiz(){
+    const box=document.getElementById('quiz'); box.style.display='block';
+    let i=0,score=0;
+    function render(){
+      if(i>=quizQuestions.length){
+        const pct=Math.round(score/quizQuestions.length*100);
+        box.innerHTML='<h3>انتهى الاختبار 🎉</h3><p>نتيجتك: <b>'+pct+'%</b></p><button class="primary" onclick="document.getElementById(\'quiz\').style.display=\'none\'">إغلاق</button>';
+        document.getElementById('homeProgress').textContent=pct+'%';
+        return;
+      }
+      const x=quizQuestions[i];
+      box.innerHTML='<div class="quiz-question">'+x.q+'</div>'+x.a.map((o,j)=>'<button class="quiz-option" data-i="'+j+'">'+o+'</button>').join('');
+      box.querySelectorAll('.quiz-option').forEach(b=>b.onclick=()=>{if(+b.dataset.i===x.c)score++;i++;render()});
+    }
+    render();
+  }
+
+  document.getElementById('reset').onclick=()=>{
+    localStorage.removeItem('nibrasProfile');
+    location.reload();
+  };
+
+  const saved=localStorage.getItem('nibrasProfile');
+  if(saved){
+    Object.assign(state,JSON.parse(saved));
+    document.getElementById('setup').classList.remove('active');
+    document.getElementById('dashboard').classList.add('active');
+    document.getElementById('profileLine').textContent=state.stage+' • '+state.subjects.join('، ');
+  }
+</script>
+</body>
+</html>
